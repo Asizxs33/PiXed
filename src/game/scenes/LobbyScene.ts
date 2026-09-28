@@ -109,6 +109,11 @@ export class LobbyScene extends Phaser.Scene {
     const cursors = keyboard.createCursorKeys()
     const wasd = keyboard.addKeys('W,A,S,D') as Record<'W'|'A'|'S'|'D', Phaser.Input.Keyboard.Key>
 
+    // Гасим стандартное поведение браузера (прокрутку страницы стрелками),
+    // пока игрок управляет персонажем. Захват активен только на время жизни
+    // сцены — при закрытии оверлея игра уничтожается вместе с ним.
+    keyboard.addCapture(['UP', 'DOWN', 'LEFT', 'RIGHT', 'W', 'A', 'S', 'D'])
+
     this.keys = {
       up: cursors.up,
       down: cursors.down,

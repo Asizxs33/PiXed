@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { LazyGameLauncher as GameLauncher } from './game/react/LazyGameLauncher'
 import {
   BarChart3, Bolt, BookOpen, Castle, ChevronDown, Coins, Crown, DoorOpen,
   Flag, Gamepad2, Gauge, Home, Medal, Play, Plus, ScrollText, Shield,
@@ -110,6 +111,7 @@ function ProgressSidebar({notify}:{notify:(s:string)=>void}) {
 function App() {
   const [active,setActive] = useState('Главная')
   const [selected,setSelected] = useState<GameMode|null>(null)
+  const [launched,setLaunched] = useState<GameMode|null>(null)
   const [toast,setToast] = useState('')
   const notify = (text:string) => setToast(text)
   useEffect(() => { if(!toast) return; const id=setTimeout(()=>setToast(''),2300); return()=>clearTimeout(id) },[toast])
@@ -119,7 +121,8 @@ function App() {
       <footer>{[[Gamepad2,'6+','игровых режимов'],[BookOpen,'50+','учебных предметов'],[Medal,'1000+','интересных вопросов'],[Crown,'Стань лучшим','вместе с нами!']].map(([Icon,b,s]) => <div key={b as string}><PixelIcon icon={Icon as IconType} tone="gold"/><span><b>{b as string}</b><small>{s as string}</small></span></div>)}</footer>
     </div>
     <AnimatePresence>{toast && <motion.div initial={{y:90,opacity:0}} animate={{y:0,opacity:1}} exit={{y:90,opacity:0}} className="toast" role="status">{toast}</motion.div>}</AnimatePresence>
-    <AnimatePresence>{selected && <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setSelected(null)} className="modal-backdrop"><motion.div initial={{scale:.85,y:20}} animate={{scale:1,y:0}} exit={{scale:.85,y:20}} onClick={e => e.stopPropagation()} className="battle-modal"><button className="modal-close" onClick={() => setSelected(null)} aria-label="Закрыть"><X/></button><Shield/><small>Режим готов</small><h2>{selected.title}</h2><p>Собирайте команду и проверьте свои знания!</p><button onClick={() => {setSelected(null);notify('Подбираем соперников…')}} className="pixel-button primary"><Swords/>В бой!</button></motion.div></motion.div>}</AnimatePresence>
+    <AnimatePresence>{selected && <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setSelected(null)} className="modal-backdrop"><motion.div initial={{scale:.85,y:20}} animate={{scale:1,y:0}} exit={{scale:.85,y:20}} onClick={e => e.stopPropagation()} className="battle-modal"><button className="modal-close" onClick={() => setSelected(null)} aria-label="Закрыть"><X/></button><Shield/><small>Режим готов</small><h2>{selected.title}</h2><p>Собирайте команду и проверьте свои знания!</p><button onClick={() => {setLaunched(selected);setSelected(null)}} className="pixel-button primary"><Swords/>В бой!</button></motion.div></motion.div>}</AnimatePresence>
+    <GameLauncher open={launched !== null} title={launched?.title} onClose={() => setLaunched(null)} />
   </div>
 }
 
