@@ -1,7 +1,9 @@
-import { useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, BrainCircuit, Code2, Coins, Gamepad2, Home, LockKeyhole, Play, Sparkles, Star, UserRound } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
+import { ArrowRight, BrainCircuit, Code2, Coins, Gamepad2, Home, LockKeyhole, Play, Sparkles, Star, UserRound } from './components/PixelIcons'
 import { PlayerAvatar, PetAvatar, WelcomeQuest, learnerProfileKey, loadLearnerProfile, type LearnerProfile } from './components/WelcomeQuest'
+
+import { FirstQuest } from './components/FirstQuest'
 
 type GameCard = { title: string; subject: string; description: string; status: string; image: string; accent: string; icon: typeof Code2 }
 
@@ -18,29 +20,30 @@ function Landing({ onStart }: { onStart: () => void }) {
     <div className="landing-brand"><span><Gamepad2 /></span><b>Pi<i>Xed</i></b></div>
     <section className="landing-copy">
       <small><Sparkles /> ENTER THE LEARNING WORLD</small>
-      <h1>Learn.<br/><strong>Play.</strong><br/>Grow.</h1>
-      <p>Knowledge opens every path.</p>
+      <h1>A little wonder.<br/><strong>A world to learn.</strong></h1>
+      <p>Your next adventure starts with curiosity.</p>
     </section>
     <section className="landing-world" aria-label="Animated PiXed world">
       <video autoPlay muted loop playsInline preload="auto" poster="/assets/archipelago-campaign.png"><source src="/assets/archipelago-loop.mp4" type="video/mp4" /></video>
       <div className="world-shade" /><div className="world-wind"><i/><i/><i/></div>
     </section>
-    <div className="enter-prompt" aria-label="Double tap to enter"><span><i/><i/></span><b>Double tap to enter</b><small>Open the portal</small></div>
+    <button className="enter-prompt" aria-label="Enter PiXed: double tap or press Enter" onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onStart() } }}><span><i/><i/></span><b>Double tap to enter</b><small>Your adventure awaits</small></button>
   </main>
 }
 
 function PortalTransition() {
-  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="portal-transition" aria-label="Opening portal"><div className="portal-core"><i/><i/><i/><span><Gamepad2 /></span></div><p>Opening PiXed world…</p><div className="portal-flash" /></motion.div>
+  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .4 }} className="world-transition" role="status" aria-label="Entering the archipelago"><div className="stone-gate"><i/><i/><i/><div className="gate-world"/><span>✧</span></div><p>A new chapter awaits</p><div className="gate-mist"/></motion.div>
 }
 
 function GameHub({ profile, onEdit }: { profile: LearnerProfile; onEdit: () => void }) {
+  const [lessonOpen, setLessonOpen] = useState(false)
   const [tab, setTab] = useState<'home' | 'games' | 'profile'>('home')
   const scrollToGames = () => { setTab('games'); document.querySelector('#game-list')?.scrollIntoView({ behavior: 'smooth' }) }
   return <div className="game-hub">
     <header className="hub-header">
-      <button className="hub-logo" onClick={() => setTab('home')}><Gamepad2 /><b>Pi<span>Xed</span></b></button>
+      <button className="hub-logo" onClick={() => { setTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }) }}><Gamepad2 /><b>Pi<span>Xed</span></b></button>
       <nav aria-label="Game navigation">
-        <button className={tab === 'home' ? 'active' : ''} onClick={() => setTab('home')}><Home />Home</button>
+        <button className={tab === 'home' ? 'active' : ''} onClick={() => { setTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }) }}><Home />Home</button>
         <button className={tab === 'games' ? 'active' : ''} onClick={scrollToGames}><Gamepad2 />Games</button>
         <button className={tab === 'profile' ? 'active' : ''} onClick={() => { setTab('profile'); document.querySelector('#player-profile')?.scrollIntoView({ behavior: 'smooth' }) }}><UserRound />Profile</button>
       </nav>
@@ -57,7 +60,7 @@ function GameHub({ profile, onEdit }: { profile: LearnerProfile; onEdit: () => v
         <header><div><small>CHOOSE ONE PATH</small><h2>Games</h2></div><p>Start with one clear mission. More worlds unlock as the platform grows.</p></header>
         <div className="simple-game-grid">{games.map((game, index) => { const Icon = game.icon; const playable = index === 0; return <motion.article whileHover={playable ? { y: -5 } : {}} key={game.title} style={{ '--game-accent': game.accent } as React.CSSProperties}>
           <div className="simple-game-art" style={{ backgroundPosition: game.image }}><span>0{index + 1}</span><small>{game.status}</small></div>
-          <div className="simple-game-copy"><span><Icon /></span><small>{game.subject}</small><h3>{game.title}</h3><p>{game.description}</p><button disabled={!playable}>{playable ? <><Play />Start game</> : <><LockKeyhole />Locked</>}</button></div>
+          <div className="simple-game-copy"><span><Icon /></span><small>{game.subject}</small><h3>{game.title}</h3><p>{game.description}</p><button disabled={!playable} onClick={() => setLessonOpen(true)}>{playable ? <><Play />Start game</> : <><LockKeyhole />Locked</>}</button></div>
         </motion.article>})}</div>
       </section>
 
@@ -68,6 +71,7 @@ function GameHub({ profile, onEdit }: { profile: LearnerProfile; onEdit: () => v
         <button onClick={onEdit}>Edit character</button>
       </section>
     </main>
+    {lessonOpen && <FirstQuest pet={profile.pet} onClose={() => setLessonOpen(false)}/> }
   </div>
 }
 
@@ -76,14 +80,17 @@ function App() {
   const [showSetup, setShowSetup] = useState(false)
   const [showHub, setShowHub] = useState(false)
   const [portal, setPortal] = useState(false)
+  const portalTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(portalTimer.current), [])
   const openPortal = () => {
-    if (portal) return
+    if (portalTimer.current !== undefined) return
     setPortal(true)
-    window.setTimeout(() => {
+    portalTimer.current = window.setTimeout(() => {
+      portalTimer.current = undefined
       setPortal(false)
       if (profile) setShowHub(true)
       else setShowSetup(true)
-    }, 1450)
+    }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 250 : 1900)
   }
   const completeSetup = (nextProfile: LearnerProfile) => {
     localStorage.setItem(learnerProfileKey, JSON.stringify(nextProfile))
@@ -92,11 +99,11 @@ function App() {
     setShowHub(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-  return <>
+  return <MotionConfig reducedMotion="user">
     {showHub && profile ? <GameHub profile={profile} onEdit={() => setShowSetup(true)} /> : <Landing onStart={openPortal} />}
     <AnimatePresence>{portal && <PortalTransition />}</AnimatePresence>
     <AnimatePresence>{showSetup && <WelcomeQuest initialProfile={profile} onClose={() => setShowSetup(false)} onComplete={completeSetup} />}</AnimatePresence>
-  </>
+  </MotionConfig>
 }
 
 export default App
