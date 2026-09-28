@@ -1,28 +1,32 @@
 # PiXed
 
-**PiXed** — образовательная игровая платформа в эстетике 16/32-bit RPG. Интерфейс построен на React и TypeScript, игровые режимы планируется развивать на Phaser.
+A pixel learning adventure with an animated entrance, guided player setup and six short practice worlds.
 
-## Локальный запуск
+## Current experience
 
-```bash
+- Visible Create your player action and double-tap entrance.
+- Step-by-step name, age, optional gender and interest, followed by three introductory choices.
+- Four animated full-body heroes, four companions, four outfit palettes and editable companion names.
+- Optional hero approach tips and four different companion supports in practice adventures.
+- Original compact six-card catalogue: Capture the Flag, Team Battle, Base Defense, Knowledge Race, Dungeon Explorer and Survival.
+- Each mode is a solo three-question practice adventure with explanations and saved best results.
+- A first coding quest teaches repeat() with an animated four-step bridge.
+- Home, Games, Quests, Rooms, Progress, Workshop and Profile navigation.
+- XP and coins calculated from best scores and first bridge completion; replay cannot farm rewards.
+- Three achievement trophies with explicit requirements.
+- Responsive layouts, keyboard dialog controls and reduced-motion support.
+
+Player profiles and progress are local to the browser. Cloud registration, email login, multiplayer rooms and global rankings are not connected. The Rooms page describes the current limitation and offers solo practice.
+
+## Development
+
+```sh
 pnpm install
 pnpm dev
-```
-
-Проверка production-сборки:
-
-```bash
 pnpm build
 ```
 
-## Технологии
-
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion
-- Phaser 3
-- локальные пиксельные шрифты
+React, TypeScript, Vite, Framer Motion and original SVG pixel artwork. See `docs/WORLD_NAVIGATION_UPDATE.md` for current verification notes.
 
 ---
 
