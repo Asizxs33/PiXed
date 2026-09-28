@@ -1,4 +1,4 @@
-import { BookOpen, Coins, Gamepad2, Home, Map, Medal, Shirt, Sparkles } from 'lucide-react'
+import { Atom, BookOpen, Coins, Gamepad2, Home, Map, Medal, Shirt, Sparkles, Swords } from 'lucide-react'
 import type { PlayerProgress, View } from '../domain/game'
 import { levelFor } from '../domain/game'
 import { PixelHero } from './PixelCharacter'
@@ -6,6 +6,8 @@ import { PixelHero } from './PixelCharacter'
 const items: Array<{ id: View; label: string; icon: typeof Home }> = [
   { id: 'home', label: 'Басты бет', icon: Home },
   { id: 'map', label: 'Оқиға', icon: Map },
+  { id: 'academy', label: 'Пәндер', icon: Atom },
+  { id: 'arena', label: 'Арена', icon: Swords },
   { id: 'workshop', label: 'Шеберхана', icon: Shirt },
   { id: 'trophies', label: 'Кубоктар', icon: Medal },
 ]

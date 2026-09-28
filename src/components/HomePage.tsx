@@ -67,7 +67,7 @@ export function HomePage({ progress, onNavigate, onStartMission }: { progress: P
       <div className="mode-grid">
         <article className="mode-card mode-card--live"><span><BookOpen /></span><small>ҚАЗІР ОЙНАУҒА БОЛАДЫ</small><h3>Сюжеттік сапар</h3><p>Жаңа ұғымды оқиға ішінде үйреніп, кодпен әлемге әсер ет.</p><button onClick={() => onStartMission(nextMission.id)}>Миссияға кіру <ArrowRight /></button></article>
         <article className="mode-card"><span><Users /></span><small>КЕЛЕСІ ТАРАУ</small><h3>Бірлескен экспедиция</h3><p>Екі оқушы рөлдерді бөлісіп, шешімді бір-біріне түсіндіреді.</p><b>Командалық шеберлік</b></article>
-        <article className="mode-card"><span><Swords /></span><small>ЖОСПАРДА</small><h3>Білім аренасы</h3><p>MMR жылдамдыққа ғана емес, дәлдік пен тұрақты білімге сүйенеді.</p><b>Әділ рейтинг</b></article>
+        <article className="mode-card mode-card--live"><span><Swords /></span><small>ЖАТТЫҒУ РЕЖИМІ ДАЙЫН</small><h3>Білім аренасы</h3><p>MMR жылдамдыққа ғана емес, дәлдік пен тұрақты білімге сүйенеді.</p><button onClick={() => onNavigate('arena')}>Аренаға кіру <ArrowRight /></button></article>
       </div>
     </section>
   </main>

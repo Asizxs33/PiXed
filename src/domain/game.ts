@@ -1,4 +1,5 @@
-export type View = 'home' | 'map' | 'lesson' | 'workshop' | 'trophies'
+export type View = 'home' | 'map' | 'lesson' | 'academy' | 'arena' | 'workshop' | 'trophies'
+export type SubjectId = 'coding' | 'math' | 'science' | 'logic'
 
 export type Mission = {
   id: string
@@ -28,7 +29,7 @@ export type PetConfig = {
 }
 
 export type PlayerProgress = {
-  version: 2
+  version: 3
   xp: number
   coins: number
   completed: string[]
@@ -37,6 +38,39 @@ export type PlayerProgress = {
   avatar: AvatarConfig
   pet: PetConfig
   ownedArmor: Array<AvatarConfig['armor']>
+  subjectMastery: Record<SubjectId, number>
+  practiceCompleted: SubjectId[]
+  arena: { mmr: number; wins: number; losses: number }
+}
+
+export type PracticeQuestion = {
+  prompt: string
+  options: string[]
+  answer: number
+  explanation: string
+}
+
+export const subjectChallenges: Record<SubjectId, { title: string; label: string; description: string; questions: PracticeQuestion[] }> = {
+  coding: { title: 'Код зертханасы', label: 'Бағдарламалау', description: 'Алгоритм, цикл және қате табу.', questions: [
+    { prompt: 'repeat(3) { move() } неше рет орындалады?', options: ['1', '2', '3', '4'], answer: 2, explanation: 'repeat ішіндегі сан әрекеттің қайталану санын көрсетеді.' },
+    { prompt: 'Қай код 4 шамды жағады?', options: ['repeat(4) { light() }', 'repeat(2) { light() }', 'light(3)', 'stop()'], answer: 0, explanation: 'Бір light() әрекеті төрт рет қайталанса, төрт шам жанады.' },
+    { prompt: 'Циклдің негізгі пайдасы қандай?', options: ['Кодты бояу', 'Қайталауды қысқарту', 'Интернетті қосу', 'Файлды өшіру'], answer: 1, explanation: 'Цикл қайталанатын команданы ықшам және өзгертуге ыңғайлы етеді.' },
+  ] },
+  math: { title: 'Сандар обсерваториясы', label: 'Математика', description: 'Заңдылық, есептеу және логикалық дәлел.', questions: [
+    { prompt: 'Қатарды жалғастыр: 3, 6, 12, 24, ...', options: ['27', '30', '36', '48'], answer: 3, explanation: 'Әр сан алдыңғы саннан екі есе үлкен: 24 × 2 = 48.' },
+    { prompt: 'Робот 4 қадамнан 3 рет жүрді. Барлығы неше қадам?', options: ['7', '12', '16', '43'], answer: 1, explanation: '4 қадам × 3 қайталау = 12 қадам.' },
+    { prompt: '20 кристалдың 1/4 бөлігі қанша?', options: ['4', '5', '10', '15'], answer: 1, explanation: '20-ны төрт тең бөлікке бөлсек, әр бөлікте 5 кристалл болады.' },
+  ] },
+  science: { title: 'Энергия бағы', label: 'Жаратылыстану', description: 'Бақылау, себеп және тәжірибе.', questions: [
+    { prompt: 'Өсімдік жарыққа қарай бұрылды. Бұл нені көрсетеді?', options: ['Кездейсоқтық', 'Тітіркенуге жауап', 'Ұйқы', 'Булану'], answer: 1, explanation: 'Өсімдік жарық тітіркендіргішіне бағытталған өсу арқылы жауап береді.' },
+    { prompt: 'Қайсысы жаңартылатын энергия көзі?', options: ['Көмір', 'Мұнай', 'Күн', 'Газ'], answer: 2, explanation: 'Күн энергиясы табиғи түрде қайта толықтырылады.' },
+    { prompt: 'Тәжірибеде бір ғана шартты өзгерту не үшін керек?', options: ['Әдемілік үшін', 'Себепті анықтау үшін', 'Тез бітіру үшін', 'Нәтижені жасыру үшін'], answer: 1, explanation: 'Бір айнымалыны өзгерту нәтижеге нақты ненің әсер еткенін көруге көмектеседі.' },
+  ] },
+  logic: { title: 'Логика аренасы', label: 'Логика', description: 'Үлгі, шарт және шешім стратегиясы.', questions: [
+    { prompt: 'Барлық көк есік ашық. Бұл есік көк. Қандай қорытынды дұрыс?', options: ['Есік жабық', 'Есік ашық', 'Түссіз', 'Белгісіз'], answer: 1, explanation: 'Жалпы ереже көк есіктердің бәріне, соның ішінде осы есікке де қолданылады.' },
+    { prompt: 'Егер қуат бар болса, маяк жанады. Маяк жанбады. Не анық?', options: ['Қуат болмады', 'Күн шықты', 'Жел соқты', 'Ештеңе'], answer: 0, explanation: 'Берілген шарт бойынша қуат болғанда маяк міндетті түрде жанар еді.' },
+    { prompt: 'A → B, B → C болса, дұрыс байланыс қайсы?', options: ['C → A', 'A → C', 'B → A', 'C → B'], answer: 1, explanation: 'Екі тізбекті шартты біріктірсек, A болғанда C-ге жетеміз.' },
+  ] },
 }
 
 export const missions: Mission[] = [
@@ -79,7 +113,7 @@ export const missions: Mission[] = [
 ]
 
 export const defaultProgress: PlayerProgress = {
-  version: 2,
+  version: 3,
   xp: 0,
   coins: 0,
   completed: [],
@@ -88,15 +122,18 @@ export const defaultProgress: PlayerProgress = {
   avatar: { skin: '#d79272', hair: '#221a35', suit: '#18aeea', armor: 'starter' },
   pet: { name: 'Арчи', color: '#6ce7ff', ears: 'pointed' },
   ownedArmor: ['starter'],
+  subjectMastery: { coding: 0, math: 0, science: 0, logic: 0 },
+  practiceCompleted: [],
+  arena: { mmr: 1000, wins: 0, losses: 0 },
 }
 
 export function loadProgress(): PlayerProgress {
   try {
-    const raw = localStorage.getItem('pixed-progress-v2')
+    const raw = localStorage.getItem('pixed-progress-v3') ?? localStorage.getItem('pixed-progress-v2')
     if (!raw) return defaultProgress
-    const parsed = JSON.parse(raw) as Partial<PlayerProgress>
-    if (parsed.version !== 2) return defaultProgress
-    return { ...defaultProgress, ...parsed }
+    const parsed = JSON.parse(raw) as Partial<Omit<PlayerProgress, 'version'>> & { version?: number }
+    if (parsed.version !== 2 && parsed.version !== 3) return defaultProgress
+    return { ...defaultProgress, ...parsed, version: 3, subjectMastery: { ...defaultProgress.subjectMastery, ...parsed.subjectMastery }, arena: { ...defaultProgress.arena, ...parsed.arena } }
   } catch {
     return defaultProgress
   }
