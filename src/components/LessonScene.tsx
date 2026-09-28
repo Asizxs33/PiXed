@@ -11,7 +11,7 @@ export function LessonScene({ mission, progress, onBack, onComplete }: { mission
   const [result, setResult] = useState<Result>('idle')
   const [hint, setHint] = useState(0)
   const runId = useRef(0)
-  const alreadyDone = useRef(progress.completed.includes(mission.id)).current
+  const alreadyDone = progress.completed.includes(mission.id)
 
   useEffect(() => () => { runId.current += 1 }, [])
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, BookOpen, BrainCircuit, Check, Code2, Flame, Gamepad2, Medal, PawPrint, ShieldCheck, Sparkles, Swords, Users } from 'lucide-react'
+import { ArrowRight, BookOpen, BrainCircuit, Code2, Gamepad2, Medal, PawPrint, ShieldCheck, Sparkles, Swords, Users } from 'lucide-react'
 import type { PlayerProgress, View } from '../domain/game'
 import { missions } from '../domain/game'
 import { PixelHero, PixelPet } from './PixelCharacter'
@@ -45,12 +45,6 @@ export function HomePage({ progress, onNavigate, onStartMission }: { progress: P
       </div>
       <div className="floating-note note-one"><Code2 /><span><b>repeat(4)</b><small>көпірді іске қос</small></span></div>
       <div className="floating-note note-two"><Medal /><span><b>Сирек кубок</b><small>нақты шеберлік үшін</small></span></div>
-    </section>
-
-    <section className="daily-strip">
-      <div><Flame /><span><small>КҮНДЕЛІКТІ STREAK</small><b>{progress.streak || 0} күн</b></span></div>
-      <div className="daily-mini"><span className={progress.daily.lessonDone ? 'done' : ''}>{progress.daily.lessonDone && <Check />} Оқиға</span><span className={progress.daily.practiceDone ? 'done' : ''}>{progress.daily.practiceDone && <Check />} Пән</span><span className={progress.daily.arenaDone ? 'done' : ''}>{progress.daily.arenaDone && <Check />} Арена</span></div>
-      <button onClick={() => onNavigate('profile')}>{progress.daily.claimed ? 'Бүгінгі марапат алынды' : 'Күндік прогресті ашу'} <ArrowRight /></button>
     </section>
 
     <section className="promise-section">

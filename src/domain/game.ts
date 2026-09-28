@@ -1,4 +1,4 @@
-export type View = 'home' | 'map' | 'lesson' | 'academy' | 'arena' | 'workshop' | 'trophies' | 'profile'
+export type View = 'home' | 'map' | 'lesson' | 'academy' | 'arena' | 'workshop' | 'trophies'
 export type SubjectId = 'coding' | 'math' | 'science' | 'logic'
 
 export type Mission = {
@@ -29,7 +29,7 @@ export type PetConfig = {
 }
 
 export type PlayerProgress = {
-  version: 4
+  version: 3
   xp: number
   coins: number
   completed: string[]
@@ -41,20 +41,7 @@ export type PlayerProgress = {
   subjectMastery: Record<SubjectId, number>
   practiceCompleted: SubjectId[]
   arena: { mmr: number; wins: number; losses: number }
-  streak: number
-  lastActiveDate: string
-  daily: DailyProgress
 }
-
-export type DailyProgress = {
-  date: string
-  lessonDone: boolean
-  practiceDone: boolean
-  arenaDone: boolean
-  claimed: boolean
-}
-
-export type DailyActivity = 'lessonDone' | 'practiceDone' | 'arenaDone'
 
 export type PracticeQuestion = {
   prompt: string
@@ -126,7 +113,7 @@ export const missions: Mission[] = [
 ]
 
 export const defaultProgress: PlayerProgress = {
-  version: 4,
+  version: 3,
   xp: 0,
   coins: 0,
   completed: [],
@@ -138,39 +125,18 @@ export const defaultProgress: PlayerProgress = {
   subjectMastery: { coding: 0, math: 0, science: 0, logic: 0 },
   practiceCompleted: [],
   arena: { mmr: 1000, wins: 0, losses: 0 },
-  streak: 0,
-  lastActiveDate: '',
-  daily: { date: todayKey(), lessonDone: false, practiceDone: false, arenaDone: false, claimed: false },
 }
 
 export function loadProgress(): PlayerProgress {
   try {
-    const raw = localStorage.getItem('pixed-progress-v4') ?? localStorage.getItem('pixed-progress-v3') ?? localStorage.getItem('pixed-progress-v2')
+    const raw = localStorage.getItem('pixed-progress-v3') ?? localStorage.getItem('pixed-progress-v2')
     if (!raw) return defaultProgress
     const parsed = JSON.parse(raw) as Partial<Omit<PlayerProgress, 'version'>> & { version?: number }
-    if (parsed.version !== 2 && parsed.version !== 3 && parsed.version !== 4) return defaultProgress
-    const daily = parsed.daily?.date === todayKey() ? { ...defaultProgress.daily, ...parsed.daily } : defaultProgress.daily
-    return { ...defaultProgress, ...parsed, version: 4, daily, subjectMastery: { ...defaultProgress.subjectMastery, ...parsed.subjectMastery }, arena: { ...defaultProgress.arena, ...parsed.arena } }
+    if (parsed.version !== 2 && parsed.version !== 3) return defaultProgress
+    return { ...defaultProgress, ...parsed, version: 3, subjectMastery: { ...defaultProgress.subjectMastery, ...parsed.subjectMastery }, arena: { ...defaultProgress.arena, ...parsed.arena } }
   } catch {
     return defaultProgress
   }
-}
-
-export function todayKey(date = new Date()) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
-export function recordActivity(progress: PlayerProgress, activity: DailyActivity): PlayerProgress {
-  const today = todayKey()
-  const daily = progress.daily.date === today ? progress.daily : { ...defaultProgress.daily, date: today }
-  const yesterday = new Date()
-  yesterday.setDate(yesterday.getDate() - 1)
-  const newDay = progress.lastActiveDate !== today
-  const streak = newDay ? (progress.lastActiveDate === todayKey(yesterday) ? progress.streak + 1 : 1) : progress.streak
-  return { ...progress, streak, lastActiveDate: today, daily: { ...daily, [activity]: true } }
 }
 
 export function levelFor(xp: number) {
