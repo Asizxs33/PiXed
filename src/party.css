@@ -8,3 +8,24 @@
 @media(max-width:640px){.roster-options.avatar-options,.roster-options.pet-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.roster-options.avatar-options>button,.roster-options.pet-options>button{min-height:176px;padding:7px 4px 12px;gap:3px}.roster-options.avatar-options .sprite-large{width:88px;height:110px}.roster-options.pet-options .sprite-large{width:94px;height:94px}.roster-options.pet-options>button{min-height:164px}.roster-description{padding:12px 14px;min-height:100px}.roster-description>b{font-size:21px}.roster-description>p{font-size:11px}.roster-options span b{font-size:25px}.choice-step{padding-top:20px}.choice-step h2{font-size:29px}.choice-step>p{font-size:12px;line-height:1.65;margin-bottom:18px}.adventure-helpers{grid-template-columns:1fr;gap:7px}.adventure-helpers>button{min-height:51px;padding:3px 12px}.adventure-helpers>button .sprite{width:29px;height:36px}.adventure-helpers>button .sprite-pet{width:33px;height:33px}.mode-party .sprite-large{width:82px;height:102px}.mode-party .sprite-pet{width:45px;height:45px}}
 @media(max-width:540px){.world-welcome{grid-template-columns:1fr;padding:22px;gap:14px}.world-welcome h1{font-size:35px}.world-welcome p{font-size:12px;max-width:290px}.world-welcome .soft-button{font-size:20px;min-height:44px}.welcome-party{display:grid;grid-template-columns:1fr;justify-items:center;padding:5px 0}.welcome-party .world-party{flex-wrap:nowrap;min-height:108px;gap:13px}.welcome-party .world-party .sprite-hero{width:87px;height:109px}.welcome-party .world-party .sprite-pet{width:81px;height:81px;margin:0}.welcome-party:before{bottom:52px;left:19%;right:19%}.party-caption{font-size:16px;margin-top:4px}.welcome-party>button{font-size:13px;padding:6px 0}.welcome-party>button svg{display:block;width:11px;height:11px}.collection-grid>button{padding:13px 10px 0}.collection-grid .sprite-large{width:100px;height:125px}.companion-collection .sprite-large{width:98px;height:98px}.collection-grid>button>p{font-size:10px;line-height:1.75;min-height:68px}.collection-grid>button>b{font-size:16px}.collection-grid>button>small{font-size:8px}.collection-grid h3{font-size:26px}.collection-grid>button>span:last-child{font-size:15px}.party-collection .world-section-heading>span{display:none}.workshop-stage{min-height:290px}.workshop-stage .world-party .sprite-hero{width:140px;height:175px}.workshop-stage .world-party .sprite-pet{width:115px;height:115px}.bridge-pet>.sprite-hero{width:31px;height:39px}.bridge-pet>.sprite-pet{width:29px;height:29px}}
 @media(prefers-reduced-motion:reduce){.world-party .sprite-pet,.hero-accessory,.hero-feather,.turtle-leaf,.quiet-orbit{animation:none}.collection-grid>button{transition:none}}
+
+/* Final layout corrections: keep navigation legible and setup steps reachable. */
+.landing-brand>.brand-lockup{display:inline-flex;align-items:center}
+.world-nav nav .mobile-more,.mobile-more-menu{display:none}
+.setup-window>header{height:auto;min-height:68px}
+.setup-window>header>div{min-width:0}
+.page-intro h1,.world-info-panel h2,.party-caption,.profile-summary h2,.workshop-stage>span{overflow-wrap:anywhere}
+@media(max-width:540px){
+ .world-nav nav{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .world-nav nav .secondary-mobile{display:none}
+ .world-nav nav .mobile-more{display:flex}
+ .world-nav nav button>span{font-size:13px}
+ .world-nav nav .more-dots{font:20px/18px Tiny5;letter-spacing:2px}
+ .mobile-more-menu{display:grid;position:absolute;bottom:74px;right:10px;width:200px;padding:8px;background:#16333f;border:1px solid #72948c;border-radius:8px;box-shadow:0 12px 35px #0008}
+ .mobile-more-menu button{display:flex;align-items:center;gap:12px;min-height:48px;padding:10px 14px;background:transparent;border:0;color:#e0ebd9;font:21px Tiny5;text-align:left}
+ .mobile-more-menu button:hover,.mobile-more-menu button[aria-current]{background:#294750;border-radius:4px}
+ .mobile-more-menu svg{width:22px;height:22px}
+ .world-main{padding-bottom:85px}
+ .setup-window>header b{font-size:20px;line-height:1.15}
+}
+@media(max-width:360px){.world-welcome{padding:18px 12px}.world-welcome h1{font-size:27px}.setup-window>header b{font-size:18px}.outfit-options{flex-wrap:wrap}}

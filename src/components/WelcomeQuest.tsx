@@ -45,7 +45,7 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
   const [detail, setDetail] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<LearnerType | null>(null)
   const panel = useRef<HTMLElement>(null)
-  useEffect(() => { panel.current?.focus() }, [step, detail, question])
+  useEffect(() => { panel.current?.focus({preventScroll:true}) }, [step, detail, question])
   useEffect(() => { const previous = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = previous } }, [])
   const [answers, setAnswers] = useState<LearnerType[]>(initialProfile ? [initialProfile.learnerType] : [])
   const [name, setName] = useState(initialProfile?.name ?? '')
@@ -78,7 +78,7 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
     }}>
       <header><span><Gamepad2 /></span><div><small>PIXED PLAYER SETUP</small><b>{title}</b></div><button onClick={onClose} aria-label="Close"><X /></button></header>
       <div className="setup-progress"><i style={{ width: `${progress}%` }} /></div>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" onExitComplete={()=>{if(panel.current) panel.current.scrollTop=0}}>
         {step === 'profile' && <motion.form key={`profile-${detail}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} className="setup-body profile-step" onSubmit={event => { event.preventDefault(); if (!name.trim()) return; if (detail < 3) setDetail(detail + 1); else { setAnswers([]); setStep('quiz') } }}>
           {initialProfile && detail === 0 && <button type="button" className="step-back edit-party-shortcut" onClick={()=>setStep('avatar')}>Just change my hero or pet <ArrowRight/></button>}<div className="step-companion"><PetAvatar choice="fox" large/><span>A little introduction<br/><b>One step at a time.</b></span></div>
           <small className="step-label">ABOUT YOU · {detail + 1} / 4</small>
@@ -100,7 +100,7 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
         {step === 'avatar' && <motion.div key="avatar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="setup-body choice-step">
           <small className="step-label">STEP 3 OF 4</small><h2 id="setup-title">Choose your hero</h2><p>This is your character in every PiXed world. You can change it later.</p>
           <div className="avatar-options roster-options">{(Object.keys(heroes) as AvatarChoice[]).map(id => <button key={id} className={avatar === id ? 'selected' : ''} aria-pressed={avatar === id} onClick={()=>setAvatar(id)} style={{'--roster-color':heroes[id].color} as React.CSSProperties}><PlayerAvatar choice={id} large original/><span><b>{heroes[id].name}</b><small>{heroes[id].role}</small></span>{avatar===id&&<Check/>}</button>)}</div><div className="roster-description" aria-live="polite"><span>{heroes[avatar].benefit}</span><b>{heroes[avatar].trait}</b><p>{heroes[avatar].detail}</p></div>
-          <button className="step-back" onClick={()=>{setStep('quiz');setQuestion(2);setAnswers(answers.slice(0,2));setSelectedAnswer(answers[2]??null)}}>Back to questions</button><button className="setup-next" onClick={() => setStep('pet')}>Choose a pet <ArrowRight /></button>
+          <button className="step-back" onClick={()=>{setStep('quiz');setQuestion(answers.length===3?2:0);setAnswers(answers.length===3?answers.slice(0,2):[]);setSelectedAnswer(answers.length===3?answers[2]:null)}}>Back to questions</button><button className="setup-next" onClick={() => setStep('pet')}>Choose a pet <ArrowRight /></button>
         </motion.div>}
 
         {step === 'pet' && <motion.div key="pet" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="setup-body choice-step">
