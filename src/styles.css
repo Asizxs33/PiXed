@@ -1,15 +1,18 @@
 @import "tailwindcss";
-@import "@fontsource/press-start-2p/cyrillic-400.css";
+@import "@fontsource/pixelify-sans/cyrillic-400.css";
+@import "@fontsource/pixelify-sans/cyrillic-600.css";
 
 @theme {
-  --font-display: "Press Start 2P", monospace;
+  --font-display: "Pixelify Sans", monospace;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; font-family: "Press Start 2P", monospace; background: #030b1b; letter-spacing: -.02em; }
+body { margin: 0; min-width: 320px; font-family: "Pixelify Sans", monospace; font-weight: 400; background: #030b1b; letter-spacing: 0; }
 button, a { cursor: pointer; }
 button:focus-visible, a:focus-visible { outline: 3px solid #5eeaff; outline-offset: 2px; }
+.font-black, .font-bold { font-weight: 600; }
+small { font-weight: 400 !important; }
 .lucide { shape-rendering: crispEdges; stroke-linecap: square; stroke-linejoin: miter; stroke-width: 3; filter: drop-shadow(2px 2px 0 #00142c); image-rendering: pixelated; }
 .pixel-avatar { border-radius: 0; box-shadow: inset 0 0 0 2px #05142c, 3px 3px 0 #001027; }
 
