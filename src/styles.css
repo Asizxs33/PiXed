@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: Impact, "Arial Black", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; font-family: "Segoe UI", Arial, sans-serif; background: #030b1b; }
+button, a { cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 3px solid #5eeaff; outline-offset: 2px; }
+
+.text-shadow-pixel { text-shadow: 3px 3px 0 #00132f; }
+.text-shadow-gold { text-shadow: 4px 4px 0 #5c3d00, -1px -1px 0 #fff09d; }
+.text-shadow-soft { text-shadow: 2px 2px 0 #00152f; }
+.shadow-panel { box-shadow: 0 0 0 1px rgb(1 218 255 / .13), 0 12px 30px rgb(0 0 0 / .28); }
+.panel { border: 1px solid #1568a9; border-radius: 5px; background: linear-gradient(145deg,#071a39,#05132b); box-shadow: 0 12px 30px rgb(0 0 0 / .22); padding: 13px; }
+
+.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgb(1 12 30 / .97) 0%, rgb(2 20 44 / .82) 29%, rgb(2 18 40 / .18) 59%, rgb(2 12 28 / .06)), url('/assets/hero.webp') center / cover no-repeat;
+  image-rendering: pixelated;
+}
+.hero::after { content: ""; position: absolute; inset: auto 0 0; height: 86px; background: linear-gradient(transparent,#031329); }
+.hero > * { position: relative; }
+.mode-thumb { background-image: linear-gradient(transparent 65%,#03142b), url('/assets/modes.webp'); background-size: 300% 200%; background-repeat: no-repeat; image-rendering: pixelated; }
+
+.pixel-button { height: 54px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 6px; padding: 0 26px; font-weight: 900; transition: filter .16s, transform .16s; }
+.pixel-button:active { transform: translateY(2px); }
+.pixel-button.primary { border: 3px solid #12e6ff; background: linear-gradient(#1ba7ff,#0877ff); box-shadow: 0 5px 0 #024f9a,0 0 16px #00d8ff55; }
+.pixel-button.secondary { border: 2px solid #5279bd; background: #0b2348; box-shadow: 0 4px 0 #031127; }
+.pixel-button:hover { filter: brightness(1.16); }
+
+@media (max-width: 880px) {
+  body { padding-bottom: 64px; }
+  .hero::before { background: linear-gradient(90deg, rgb(1 12 30 / .96), rgb(2 18 40 / .62) 75%, rgb(2 12 28 / .12)), url('/assets/hero.webp') center / cover no-repeat; }
+}
