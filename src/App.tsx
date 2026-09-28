@@ -26,8 +26,8 @@ const games: GameMode[] = [
 ]
 
 const players = [
-  ['DarkKnight', '28', '2 450', '🧛'], ['Phoenix', '27', '2 310', '🧑🏻'],
-  ['SkillMaster', '25', '2 120', '🧑🏼'], ['BrainStorm', '24', '1 980', '🧙'], ['Zhan', '22', '1 750', '🥷'],
+  ['DarkKnight', '28', '2 450'], ['Phoenix', '27', '2 310'],
+  ['SkillMaster', '25', '2 120'], ['BrainStorm', '24', '1 980'], ['Zhan', '22', '1 750'],
 ]
 
 const navItems = [
@@ -39,6 +39,10 @@ function Logo() {
     <Gamepad2 className="h-10 w-10 -rotate-6 text-cyan-300 drop-shadow-[0_0_10px_#00cfff]" strokeWidth={3} />
     <span className="font-display text-2xl tracking-[.12em] text-white text-shadow-pixel">KNOW<span className="text-amber-300">PLAY</span></span>
   </a>
+}
+
+function PixelAvatar({large=false}:{large?:boolean}) {
+  return <span className={`pixel-avatar grid place-items-center border-2 border-sky-500 bg-gradient-to-br from-blue-800 to-fuchsia-950 ${large?'h-14 w-14':'h-10 w-10'}`}><CircleUserRound className={large?'h-8 w-8':'h-6 w-6'} /></span>
 }
 
 function Topbar({active, setActive}:{active:string;setActive:(s:string)=>void}) {
@@ -55,7 +59,7 @@ function Topbar({active, setActive}:{active:string;setActive:(s:string)=>void}) 
         <div className="flex h-full items-center gap-2 border-l border-sky-900 px-4 font-black max-[1120px]:hidden"><Bolt className="h-5 text-cyan-300" fill="currentColor"/>85</div>
         <div className="flex h-full items-center gap-2 border-l border-sky-900 px-4 font-black max-[1120px]:hidden"><Coins className="h-5 text-amber-300"/>320</div>
         <button onClick={()=>setOpen(v=>!v)} className="ml-1 flex h-[52px] items-center gap-2 rounded border border-sky-800 bg-[#081b3a] p-1.5 pr-3 transition hover:border-cyan-500" aria-expanded={open}>
-          <span className="grid h-10 w-10 place-items-center border-2 border-sky-500 bg-gradient-to-br from-orange-300 to-fuchsia-900 text-xl">🧑🏻</span>
+          <PixelAvatar />
           <span className="text-left text-sm font-bold max-[560px]:hidden">Player_01<small className="block text-[11px] font-medium text-blue-200">Ур. 12</small></span><ChevronDown className="h-4" />
         </button>
         <AnimatePresence>{open&&<motion.div initial={{opacity:0,y:-8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} className="absolute right-4 top-[58px] w-44 rounded border border-sky-700 bg-[#071a39] p-2 shadow-2xl"><button className="w-full rounded px-3 py-2 text-left text-sm hover:bg-sky-800">Открыть профиль</button><button className="w-full rounded px-3 py-2 text-left text-sm hover:bg-sky-800">Настройки</button></motion.div>}</AnimatePresence>
@@ -89,11 +93,11 @@ function GameCard({game,index,onPlay}:{game:GameMode;index:number;onPlay:(g:Game
 
 function ProgressSidebar({notify}:{notify:(s:string)=>void}) {
   return <aside className="flex flex-col gap-3.5 bg-gradient-to-b from-[#06142d] to-[#031126] p-3.5 max-[880px]:grid max-[880px]:grid-cols-2 max-[560px]:block">
-    <section className="panel max-[880px]:col-span-2"><PanelTitle>Твой прогресс</PanelTitle><div className="flex items-center gap-3"><span className="grid h-14 w-14 place-items-center border-2 border-sky-500 bg-gradient-to-br from-orange-300 to-fuchsia-900 text-3xl">🧑🏻</span><div className="flex-1 text-sm font-black">Player_01<small className="my-1 block font-medium text-blue-200">Ур. 12</small><div className="h-2.5 overflow-hidden rounded-full border border-sky-500 bg-[#020e25]"><motion.span initial={{width:0}} animate={{width:'72%'}} transition={{delay:.5,duration:.8}} className="block h-full bg-gradient-to-r from-cyan-300 to-blue-600 shadow-[0_0_9px_#00d8ff]"/></div></div></div>
+    <section className="panel max-[880px]:col-span-2"><PanelTitle>Твой прогресс</PanelTitle><div className="flex items-center gap-3"><PixelAvatar large/><div className="flex-1 text-xs font-black">Player_01<small className="my-1 block text-[9px] font-medium text-blue-200">Ур. 12</small><div className="h-2.5 overflow-hidden rounded-full border border-sky-500 bg-[#020e25]"><motion.span initial={{width:0}} animate={{width:'72%'}} transition={{delay:.5,duration:.8}} className="block h-full bg-gradient-to-r from-cyan-300 to-blue-600 shadow-[0_0_9px_#00d8ff]"/></div></div></div>
       <div className="mt-3 divide-y divide-sky-900 text-sm"><Stat icon={<Bolt/>} label="Энергия" value="85"/><Stat icon={<Coins/>} label="Монеты" value="320"/><Stat icon={<Star/>} label="Уровень" value="12"/></div></section>
     <section className="panel"><PanelTitle>Быстрые действия</PanelTitle>{[[ScrollText,'Мои задания'],[Trophy,'Рейтинг'],[CircleUserRound,'Профиль']].map(([Icon,label])=><button key={label as string} onClick={()=>notify(`${label} — раздел скоро откроется`)} className="mb-1 flex w-full items-center gap-2 rounded border border-sky-800 bg-[#092049] px-3 py-2 text-left text-xs hover:border-sky-500 hover:bg-blue-900"><Icon className="h-4 w-4 text-blue-200"/>{label as string}</button>)}</section>
-    <section className="panel"><PanelTitle>Последние события</PanelTitle>{[['🎮','Игрок_X создал комнату','2 мин назад'],['⚑','Синие захватили флаг!','5 мин назад'],['✓','Player_01 ответил на вопрос','7 мин назад'],['✖','Красные победили!','12 мин назад']].map(([icon,text,time])=><div key={text} className="grid grid-cols-[28px_1fr] gap-2 border-b border-sky-900 py-1.5 text-[11px] last:border-0"><span className="grid h-7 w-7 place-items-center rounded bg-blue-700">{icon}</span><span>{text}<small className="block text-blue-300/70">{time}</small></span></div>)}</section>
-    <section id="rating" className="panel"><PanelTitle>Топ игроков</PanelTitle>{players.map(([name,level,score,face],i)=><div key={name} className="grid grid-cols-[20px_28px_1fr_auto] items-center gap-2 py-1 text-[11px]"><b className={`text-base ${i===0?'text-amber-300':'text-blue-100'}`}>{i+1}</b><span className="grid h-7 w-7 place-items-center border border-sky-600 bg-blue-900">{face}</span><span><strong>{name}</strong><small className="block text-blue-300">Ур. {level}</small></span><span className="text-blue-200">♕ {score}</span></div>)}</section>
+    <section className="panel"><PanelTitle>Последние события</PanelTitle>{[[Gamepad2,'Игрок_X создал комнату','2 мин назад'],[Flag,'Синие захватили флаг!','5 мин назад'],[ScrollText,'Player_01 ответил на вопрос','7 мин назад'],[Swords,'Красные победили!','12 мин назад']].map(([Icon,text,time])=><div key={text as string} className="grid grid-cols-[28px_1fr] gap-2 border-b border-sky-900 py-1.5 text-[9px] leading-4 last:border-0"><span className="grid h-7 w-7 place-items-center rounded-none border border-sky-500 bg-blue-800"><Icon className="h-4 w-4"/></span><span>{text as string}<small className="block text-[8px] text-blue-300/70">{time as string}</small></span></div>)}</section>
+    <section id="rating" className="panel"><PanelTitle>Топ игроков</PanelTitle>{players.map(([name,level,score],i)=><div key={name} className="grid grid-cols-[20px_28px_1fr_auto] items-center gap-2 py-1 text-[9px]"><b className={`text-xs ${i===0?'text-amber-300':'text-blue-100'}`}>{i+1}</b><span className="grid h-7 w-7 place-items-center border border-sky-600 bg-blue-900"><Medal className={`h-4 w-4 ${i===0?'text-amber-300':'text-cyan-300'}`}/></span><span><strong>{name}</strong><small className="block text-[8px] text-blue-300">Ур. {level}</small></span><span className="text-[8px] text-blue-200">{score}</span></div>)}</section>
   </aside>
 }
 
