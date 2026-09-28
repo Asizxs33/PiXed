@@ -6,7 +6,8 @@ A pixel learning adventure with an animated entrance, guided player setup and si
 
 - Visible Create your player action and double-tap entrance.
 - Step-by-step name, age, optional gender and interest, followed by three introductory choices.
-- Two animated full-body heroes, three companions, four outfit palettes and editable companion names.
+- Four animated full-body heroes, four companions, four outfit palettes and editable companion names.
+- Optional hero approach tips and four different companion supports in practice adventures.
 - Original compact six-card catalogue: Capture the Flag, Team Battle, Base Defense, Knowledge Race, Dungeon Explorer and Survival.
 - Each mode is a solo three-question practice adventure with explanations and saved best results.
 - A first coding quest teaches repeat() with an animated four-step bridge.

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { CompanionSprite } from './PixelCharacters'
+import { CompanionSprite, HeroSprite } from './PixelCharacters'
 import { Play, X } from './PixelIcons'
-import type { PetChoice } from './WelcomeQuest'
+import type { PetChoice, AvatarChoice } from './WelcomeQuest'
 
-export function FirstQuest({ pet, onClose, onComplete }: { pet: PetChoice; onClose: () => void; onComplete?: () => void }) {
+export function FirstQuest({ pet, hero = 'girl', onClose, onComplete }: { pet: PetChoice; hero?: AvatarChoice; onClose: () => void; onComplete?: () => void }) {
   const [repeat, setRepeat] = useState(1)
   const [position, setPosition] = useState(0)
   const [running, setRunning] = useState(false)
@@ -33,7 +33,7 @@ export function FirstQuest({ pet, onClose, onComplete }: { pet: PetChoice; onClo
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
     }}><header><span><Play/></span><div><small>CODE QUEST · CHAPTER 01</small><b>The quiet bridge</b></div><button autoFocus onClick={onClose} aria-label="Close lesson"><X/></button></header>
       <div className="setup-body"><small className="step-label">YOUR FIRST LOOP</small><h2 id="first-quest-title">A path across the clouds</h2><p>Help your companion cross the bridge with one repeating command.</p>
-        <div className="bridge-board"><div className="bridge-pet" style={{left:`${position * 16.5}%`}}><CompanionSprite choice={pet} large/></div><div className="bridge-stones">{['Start','1','2','3','Goal',''].map((label,i) => <span key={i} className={i === 4 ? 'bridge-goal' : ''}>{label}</span>)}</div></div>
+        <div className="bridge-board"><div className="bridge-pet" style={{left:`${position * 16.5}%`}}><HeroSprite choice={hero}/><CompanionSprite choice={pet}/></div><div className="bridge-stones">{['Start','1','2','3','Goal',''].map((label,i) => <span key={i} className={i === 4 ? 'bridge-goal' : ''}>{label}</span>)}</div></div>
         <label className="loop-control">Number of moves<select disabled={running} value={repeat} onChange={e => setRepeat(Number(e.target.value))}>{[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}</select></label>
         <pre className="loop-code">{`repeat(${repeat}) {\n  move()\n}`}</pre><p className="quest-feedback" role="status">{feedback}</p>
         <button className="setup-next" disabled={running} onClick={run}><Play/>{running ? 'Moving…' : 'Run my code'}</button>

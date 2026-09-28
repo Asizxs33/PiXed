@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { heroes, companions, type HeroChoice, type CompanionChoice } from '../domain/party'
 import { HeroSprite, CompanionSprite } from './PixelCharacters'
 import { ArrowRight, BrainCircuit, Check, Code2, Compass, Gamepad2, Lightbulb, Sparkles, Users, WandSparkles, X } from './PixelIcons'
 
 export type LearnerType = 'Explorer' | 'Strategist' | 'Creator' | 'Teammate'
-export type AvatarChoice = 'girl' | 'boy'
-export type PetChoice = 'fox' | 'bot' | 'owl'
+export type AvatarChoice = HeroChoice
+export type PetChoice = CompanionChoice
 export type LearnerProfile = { outfit?: string; name: string; age: string; gender: string; favoriteSubject: string; learnerType: LearnerType; avatar: AvatarChoice; pet: PetChoice; petName: string }
 export const learnerProfileKey = 'pixed-player-profile-v3'
 
@@ -14,14 +15,14 @@ export function loadLearnerProfile(): LearnerProfile | null {
     const raw = localStorage.getItem(learnerProfileKey)
     if (!raw) return null
     const value = JSON.parse(raw) as Partial<LearnerProfile>
-    if (typeof value.name !== 'string' || !value.name.trim() || !['girl','boy'].includes(value.avatar ?? '') || !['fox','bot','owl'].includes(value.pet ?? '') || !['Explorer','Strategist','Creator','Teammate'].includes(value.learnerType ?? '') || typeof value.age !== 'string' || typeof value.favoriteSubject !== 'string' || typeof value.petName !== 'string') return null
+    if (typeof value.name !== 'string' || !value.name.trim() || !['girl','boy','iris','kai'].includes(value.avatar ?? '') || !['fox','bot','owl','turtle'].includes(value.pet ?? '') || !['Explorer','Strategist','Creator','Teammate'].includes(value.learnerType ?? '') || typeof value.age !== 'string' || typeof value.favoriteSubject !== 'string' || typeof value.petName !== 'string') return null
     return value as LearnerProfile
   } catch { return null }
 }
 
 export const PlayerAvatar = HeroSprite
 export const PetAvatar = CompanionSprite
-const pets = { fox: { name: 'Nova', label: 'Sky Fox' }, bot: { name: 'Byte', label: 'Mini Bot' }, owl: { name: 'Orbit', label: 'Star Owl' } } as const
+const pets = companions
 
 const resultInfo: Record<LearnerType, { title: string; note: string; icon: typeof Compass; color: string }> = {
   Explorer: { title: 'Curious Explorer', note: 'Your choices today suggest you enjoy testing ideas and discovering how things work.', icon: Compass, color: '#4ee8ff' },
@@ -98,13 +99,13 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
 
         {step === 'avatar' && <motion.div key="avatar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="setup-body choice-step">
           <small className="step-label">STEP 3 OF 4</small><h2 id="setup-title">Choose your hero</h2><p>This is your character in every PiXed world. You can change it later.</p>
-          <div className="avatar-options"><button className={avatar === 'girl' ? 'selected' : ''} aria-pressed={avatar === 'girl'} onClick={() => setAvatar('girl')}><PlayerAvatar choice="girl" large/><span><b>Luna</b><small>Girl explorer · curious & brave</small></span>{avatar === 'girl' && <Check/>}</button><button className={avatar === 'boy' ? 'selected' : ''} aria-pressed={avatar === 'boy'} onClick={() => setAvatar('boy')}><PlayerAvatar choice="boy" large/><span><b>Max</b><small>Boy explorer · kind & inventive</small></span>{avatar === 'boy' && <Check/>}</button></div>
+          <div className="avatar-options roster-options">{(Object.keys(heroes) as AvatarChoice[]).map(id => <button key={id} className={avatar === id ? 'selected' : ''} aria-pressed={avatar === id} onClick={()=>setAvatar(id)} style={{'--roster-color':heroes[id].color} as React.CSSProperties}><PlayerAvatar choice={id} large original/><span><b>{heroes[id].name}</b><small>{heroes[id].role}</small></span>{avatar===id&&<Check/>}</button>)}</div><div className="roster-description" aria-live="polite"><span>{heroes[avatar].benefit}</span><b>{heroes[avatar].trait}</b><p>{heroes[avatar].detail}</p></div>
           <button className="step-back" onClick={()=>{setStep('quiz');setQuestion(2);setAnswers(answers.slice(0,2));setSelectedAnswer(answers[2]??null)}}>Back to questions</button><button className="setup-next" onClick={() => setStep('pet')}>Choose a pet <ArrowRight /></button>
         </motion.div>}
 
         {step === 'pet' && <motion.div key="pet" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="setup-body choice-step">
           <small className="step-label">STEP 4 OF 4</small><h2 id="setup-title">Pick your companion</h2><p>Your pet follows you through lessons and celebrates every win.</p>
-          <div className="pet-options">{(Object.entries(pets) as Array<[PetChoice, typeof pets[PetChoice]]>).map(([id, item]) => <button key={id} className={pet === id ? 'selected' : ''} aria-pressed={pet === id} onClick={() => setPet(id)}><PetAvatar choice={id} large/><span><b>{item.name}</b><small>{item.label}</small></span>{pet === id && <Check/>}</button>)}</div>
+          <div className="pet-options roster-options">{(Object.entries(pets) as Array<[PetChoice, typeof pets[PetChoice]]>).map(([id, item]) => <button key={id} className={pet === id ? 'selected' : ''} aria-pressed={pet === id} onClick={() => setPet(id)}><PetAvatar choice={id} large/><span><b>{item.name}</b><small>{item.label}</small></span>{pet === id && <Check/>}</button>)}</div><div className="roster-description" aria-live="polite"><span>{pets[pet].benefit}</span><b>{pets[pet].trait}</b><p>{pets[pet].detail}</p></div>
           <button className="step-back" onClick={()=>setStep('avatar')}>Back to heroes</button><button className="setup-next" onClick={() => setStep('ready')}>Build my profile <Sparkles /></button>
         </motion.div>}
 

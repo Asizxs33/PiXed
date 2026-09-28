@@ -4,6 +4,7 @@ import App from './App'
 import './styles.css'
 import './polish.css'
 import './world.css'
+import './party.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

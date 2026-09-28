@@ -55,7 +55,7 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   return <MotionConfig reducedMotion="user"><OutfitContext.Provider value={profile?.outfit ?? 'original'}>
-    {showHub && profile ? <PlayerWorld profile={profile} onEdit={() => setShowSetup(true)} onUpdate={completeSetup} onExit={()=>setShowHub(false)}/> : <Landing onStart={openPortal} returning={!!profile}/>}
+    {showHub && profile ? <PlayerWorld profile={profile} onEdit={() => setShowSetup(true)} onUpdate={next=>{localStorage.setItem(learnerProfileKey,JSON.stringify(next));setProfile(next)}} onExit={()=>setShowHub(false)}/> : <Landing onStart={openPortal} returning={!!profile}/>}
     <AnimatePresence>{portal && <PortalTransition />}</AnimatePresence>
     <AnimatePresence>{showSetup && <WelcomeQuest initialProfile={profile} onClose={() => setShowSetup(false)} onComplete={completeSetup} />}</AnimatePresence>
   </OutfitContext.Provider></MotionConfig>
