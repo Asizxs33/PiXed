@@ -1,44 +1,31 @@
 # PiXed
 
-**PiXed** — білім арқылы пиксельді әлемді өзгертетін оқу RPG прототипі. Бірінші жұмыс істейтін тарауда оқушы циклдерді қолданып, питомецін көпірден өткізеді, арал жүйелерін іске қосады және прогресін жинайды.
+A pixel learning adventure with an animated entrance, guided player setup and six short practice worlds.
 
-## Қазір жұмыс істейді
+## Current experience
 
-- алты миссиядан тұратын ашылатын сюжеттік карта;
-- қадамдап орындалатын `repeat` сабағы және түсінікті қате кері байланысы;
-- бір рет берілетін XP, монета және шартпен ашылатын кубоктар;
-- кейіпкердің түсін, питомецтің атын, түсін және құлағын өзгерту;
-- монетаға алынатын және оқу күшіне әсер етпейтін сауыттар;
-- нұсқаланған `localStorage` арқылы прогресті сақтау;
-- басты бетке ғана жүктелетін 8 секундтық дыбыссыз cinematic loop: баяу камера «тынысы», жел, жарық және кейіпкерлердің idle-қимылы;
-- бағдарламалау, математика, жаратылыстану және логикаға арналған түсіндірмелі білім зертханасы;
-- бес сұрақтық bot-арена, жеңіс/жаттығу статистикасы және 1000-нан басталатын MMR рейтингі;
-- барлық режимге ортақ XP, монета, пәндік шеберлік, аватар және кубок прогресі;
-- desktop және мобильді интерфейс, reduced-motion қолдауы.
+- Visible Create your player action and double-tap entrance.
+- Step-by-step name, age, optional gender and interest, followed by three introductory choices.
+- Two animated full-body heroes, three companions, four outfit palettes and editable companion names.
+- Original compact six-card catalogue: Capture the Flag, Team Battle, Base Defense, Knowledge Race, Dungeon Explorer and Survival.
+- Each mode is a solo three-question practice adventure with explanations and saved best results.
+- A first coding quest teaches repeat() with an animated four-step bridge.
+- Home, Games, Quests, Rooms, Progress, Workshop and Profile navigation.
+- XP and coins calculated from best scores and first bridge completion; replay cannot farm rewards.
+- Three achievement trophies with explicit requirements.
+- Responsive layouts, keyboard dialog controls and reduced-motion support.
 
-Бұл — жергілікті vertical slice. Аккаунт, мұғалім панелі, серверлік бағалау, кооператив және MMR арена келесі кезеңдерге арналған. Өнім жүйесі `docs/UNIFIED_GAME_SYSTEM_RU.md` құжатында берілген.
+Player profiles and progress are local to the browser. Cloud registration, email login, multiplayer rooms and global rankings are not connected. The Rooms page describes the current limitation and offers solo practice.
 
-## Локальный запуск
+## Development
 
-```bash
+```sh
 pnpm install
 pnpm dev
-```
-
-Проверка production-сборки:
-
-```bash
 pnpm build
 ```
 
-## Технологии
-
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion
-- Phaser 4 dependency (болашақ күрделі ойын сценалары үшін; қазіргі сабақ React/CSS арқылы орындалады)
-- локальные пиксельные шрифты
+React, TypeScript, Vite, Framer Motion and original SVG pixel artwork. See `docs/WORLD_NAVIGATION_UPDATE.md` for current verification notes.
 
 ---
 

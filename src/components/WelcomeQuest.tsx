@@ -6,7 +6,7 @@ import { ArrowRight, BrainCircuit, Check, Code2, Compass, Gamepad2, Lightbulb, S
 export type LearnerType = 'Explorer' | 'Strategist' | 'Creator' | 'Teammate'
 export type AvatarChoice = 'girl' | 'boy'
 export type PetChoice = 'fox' | 'bot' | 'owl'
-export type LearnerProfile = { name: string; age: string; gender: string; favoriteSubject: string; learnerType: LearnerType; avatar: AvatarChoice; pet: PetChoice; petName: string }
+export type LearnerProfile = { outfit?: string; name: string; age: string; gender: string; favoriteSubject: string; learnerType: LearnerType; avatar: AvatarChoice; pet: PetChoice; petName: string }
 export const learnerProfileKey = 'pixed-player-profile-v3'
 
 export function loadLearnerProfile(): LearnerProfile | null {
@@ -39,7 +39,7 @@ const questions: Array<{ title: string; text: string; answers: Array<{ label: st
 type Step = 'profile' | 'quiz' | 'avatar' | 'pet' | 'ready'
 
 export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialProfile?: LearnerProfile | null; onClose: () => void; onComplete: (profile: LearnerProfile) => void }) {
-  const [step, setStep] = useState<Step>(initialProfile ? 'avatar' : 'profile')
+  const [step, setStep] = useState<Step>('profile')
   const [question, setQuestion] = useState(0)
   const [detail, setDetail] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<LearnerType | null>(null)
@@ -59,8 +59,9 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
     return (Object.entries(score).sort((a, b) => b[1] - a[1])[0]?.[0] ?? initialProfile?.learnerType ?? 'Explorer') as LearnerType
   }, [answers, initialProfile])
   const answer = (type: LearnerType) => { setAnswers(current => [...current, type]); if (question === 2) setStep('avatar'); else setQuestion(current => current + 1) }
-  const profile: LearnerProfile = { name: name.trim(), age, gender, favoriteSubject, learnerType, avatar, pet, petName: pets[pet].name }
+  const profile: LearnerProfile = { outfit: initialProfile?.outfit ?? 'original', name: name.trim(), age, gender, favoriteSubject, learnerType, avatar, pet, petName: initialProfile?.pet === pet ? initialProfile.petName : pets[pet].name }
   const progress = step === 'profile' ? 5 + detail * 6 : step === 'quiz' ? 27 + question * 14 : step === 'avatar' ? 72 : step === 'pet' ? 88 : 100
+  const previousQuestion = () => { if (question === 0) { setStep('profile'); setDetail(3) } else { setQuestion(question-1); setSelectedAnswer(answers[question-1] ?? null); setAnswers(answers.slice(0,question-1)) } }
   const title = step === 'profile' ? 'Tell us about you' : step === 'quiz' ? `Quick quest ${question + 1}/3` : step === 'avatar' ? 'Choose your hero' : step === 'pet' ? 'Choose your pet' : 'Adventure ready'
 
   return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="setup-backdrop" role="dialog" aria-modal="true" aria-labelledby="setup-title">
@@ -77,8 +78,8 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
       <header><span><Gamepad2 /></span><div><small>PIXED PLAYER SETUP</small><b>{title}</b></div><button onClick={onClose} aria-label="Close"><X /></button></header>
       <div className="setup-progress"><i style={{ width: `${progress}%` }} /></div>
       <AnimatePresence mode="wait">
-        {step === 'profile' && <motion.form key={`profile-${detail}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} className="setup-body profile-step" onSubmit={event => { event.preventDefault(); if (!name.trim()) return; if (detail < 3) setDetail(detail + 1); else setStep('quiz') }}>
-          <div className="step-companion"><PetAvatar choice="fox" large/><span>A little introduction<br/><b>One step at a time.</b></span></div>
+        {step === 'profile' && <motion.form key={`profile-${detail}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} className="setup-body profile-step" onSubmit={event => { event.preventDefault(); if (!name.trim()) return; if (detail < 3) setDetail(detail + 1); else { setAnswers([]); setStep('quiz') } }}>
+          {initialProfile && detail === 0 && <button type="button" className="step-back edit-party-shortcut" onClick={()=>setStep('avatar')}>Just change my hero or pet <ArrowRight/></button>}<div className="step-companion"><PetAvatar choice="fox" large/><span>A little introduction<br/><b>One step at a time.</b></span></div>
           <small className="step-label">ABOUT YOU · {detail + 1} / 4</small>
           <h2 id="setup-title">{['What should we call you?', 'How old are you?', 'How do you identify?', 'What sparks your curiosity?'][detail]}</h2>
           <p>{['A nickname is perfect. This is your adventure.', 'Choose your age group for your first learning path.', 'You can also skip this. Every hero is open to everyone.', 'Pick the subject you would like to explore first.'][detail]}</p>
@@ -92,23 +93,23 @@ export function WelcomeQuest({ initialProfile, onClose, onComplete }: { initialP
         {step === 'quiz' && <motion.div key={`quiz-${question}`} initial={{ opacity: 0, scale: .96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.03 }} className="setup-body quiz-step">
           <div className={`quest-vignette quest-vignette-${question}`} aria-hidden="true"><PlayerAvatar choice={avatar} large/><div className="quest-landmark">{["⌘","⚙","✧"][question]}</div><PetAvatar choice={question === 1 ? "bot" : "fox"} large/></div>
           <small className="step-label">QUESTION {question + 1} OF 3</small><h2 id="setup-title">{questions[question].title}</h2><p>{questions[question].text}</p>
-          <div className="setup-answers">{questions[question].answers.map(({ label, type, icon: Icon }) => <button key={type} aria-pressed={selectedAnswer === type} className={selectedAnswer === type ? "selected" : ""} onClick={() => setSelectedAnswer(type)}><Icon/><b>{label}</b><ArrowRight/></button>)}</div><small className="setup-note">No wrong answers — choose what feels natural.</small><button className="setup-next" disabled={!selectedAnswer} onClick={() => { if (selectedAnswer) { answer(selectedAnswer); setSelectedAnswer(null) } }}>{question === 2 ? "Meet your hero" : "Next chapter"}<ArrowRight/></button>
+          <div className="setup-answers">{questions[question].answers.map(({ label, type, icon: Icon }) => <button key={type} aria-pressed={selectedAnswer === type} className={selectedAnswer === type ? "selected" : ""} onClick={() => setSelectedAnswer(type)}><Icon/><b>{label}</b><ArrowRight/></button>)}</div><button className="step-back" onClick={previousQuestion}>Back</button><small className="setup-note">No wrong answers — choose what feels natural.</small><button className="setup-next" disabled={!selectedAnswer} onClick={() => { if (selectedAnswer) { answer(selectedAnswer); setSelectedAnswer(null) } }}>{question === 2 ? "Meet your hero" : "Next chapter"}<ArrowRight/></button>
         </motion.div>}
 
         {step === 'avatar' && <motion.div key="avatar" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="setup-body choice-step">
           <small className="step-label">STEP 3 OF 4</small><h2 id="setup-title">Choose your hero</h2><p>This is your character in every PiXed world. You can change it later.</p>
           <div className="avatar-options"><button className={avatar === 'girl' ? 'selected' : ''} aria-pressed={avatar === 'girl'} onClick={() => setAvatar('girl')}><PlayerAvatar choice="girl" large/><span><b>Luna</b><small>Girl explorer · curious & brave</small></span>{avatar === 'girl' && <Check/>}</button><button className={avatar === 'boy' ? 'selected' : ''} aria-pressed={avatar === 'boy'} onClick={() => setAvatar('boy')}><PlayerAvatar choice="boy" large/><span><b>Max</b><small>Boy explorer · kind & inventive</small></span>{avatar === 'boy' && <Check/>}</button></div>
-          <button className="setup-next" onClick={() => setStep('pet')}>Choose a pet <ArrowRight /></button>
+          <button className="step-back" onClick={()=>{setStep('quiz');setQuestion(2);setAnswers(answers.slice(0,2));setSelectedAnswer(answers[2]??null)}}>Back to questions</button><button className="setup-next" onClick={() => setStep('pet')}>Choose a pet <ArrowRight /></button>
         </motion.div>}
 
         {step === 'pet' && <motion.div key="pet" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="setup-body choice-step">
           <small className="step-label">STEP 4 OF 4</small><h2 id="setup-title">Pick your companion</h2><p>Your pet follows you through lessons and celebrates every win.</p>
           <div className="pet-options">{(Object.entries(pets) as Array<[PetChoice, typeof pets[PetChoice]]>).map(([id, item]) => <button key={id} className={pet === id ? 'selected' : ''} aria-pressed={pet === id} onClick={() => setPet(id)}><PetAvatar choice={id} large/><span><b>{item.name}</b><small>{item.label}</small></span>{pet === id && <Check/>}</button>)}</div>
-          <button className="setup-next" onClick={() => setStep('ready')}>Build my profile <Sparkles /></button>
+          <button className="step-back" onClick={()=>setStep('avatar')}>Back to heroes</button><button className="setup-next" onClick={() => setStep('ready')}>Build my profile <Sparkles /></button>
         </motion.div>}
 
         {step === 'ready' && <motion.div key="ready" initial={{ opacity: 0, scale: .88 }} animate={{ opacity: 1, scale: 1 }} className="setup-body ready-step">
-          <div className="ready-burst" aria-hidden="true">{[0,1,2,3,4,5,6,7].map(n => <i key={n}/>)}</div><small className="step-label">PLAYER READY</small><div className="ready-party"><PlayerAvatar choice={avatar} large/><PetAvatar choice={pet} large/></div><h2 id="setup-title">{name}, you are a<br/><strong>{resultInfo[learnerType].title}</strong></h2><p>{resultInfo[learnerType].note}</p><div className="ready-tags"><span><Check/> {favoriteSubject}</span><span><Check/> {pets[pet].name} joined you</span></div><button className="setup-next" onClick={() => onComplete(profile)}>Open the game world <ArrowRight /></button>
+          <div className="ready-burst" aria-hidden="true">{[0,1,2,3,4,5,6,7].map(n => <i key={n}/>)}</div><small className="step-label">PLAYER READY</small><div className="ready-party"><PlayerAvatar choice={avatar} large/><PetAvatar choice={pet} large/></div><h2 id="setup-title">{name}, you are a<br/><strong>{resultInfo[learnerType].title}</strong></h2><p>{resultInfo[learnerType].note}</p><div className="ready-tags"><span><Check/> {favoriteSubject}</span><span><Check/> {profile.petName} joined you</span></div><button className="setup-next" onClick={() => onComplete(profile)}>Open the game world <ArrowRight /></button>
         </motion.div>}
       </AnimatePresence>
     </section>

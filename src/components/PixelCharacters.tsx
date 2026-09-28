@@ -1,10 +1,15 @@
+import { createContext, useContext } from 'react'
+export const OutfitContext = createContext('original')
 type Hero = 'girl' | 'boy'
 type Pet = 'fox' | 'bot' | 'owl'
 
 // Whole-body artwork on a shared 64px grid; movable parts retain their pixel edges.
 export function HeroSprite({ choice, large = false }: { choice: Hero; large?: boolean }) {
   const girl = choice === 'girl'
-  return <span className={`sprite sprite-hero ${large ? 'sprite-large' : ''}`} role="img" aria-label={girl ? 'Luna, a teal-cloaked explorer with boots and a satchel' : 'Max, a violet-cloaked explorer with boots and a satchel'}>
+  const tone = useContext(OutfitContext)
+  const colors: Record<string,string[]> = { forest:['#54846b','#7eb397','#346252'], sunset:['#ae7658','#dbab73','#855344'], ocean:['#518eb0','#85bbd0','#39677f'] }
+  const coat = colors[tone] ?? (girl ? ['#52b9ad','#7ad5ba','#318d90'] : ['#8c82c5','#aea2df','#696296'])
+  return <span className={`sprite sprite-hero ${large ? 'sprite-large' : ''}`} role="img" aria-label={girl ? 'Luna, an explorer with boots and a satchel' : 'Max, an explorer with boots and a satchel'}>
     <svg viewBox="0 0 64 80" shapeRendering="crispEdges" aria-hidden="true">
       <ellipse cx="32" cy="75" rx="19" ry="3" fill="#071426" opacity=".5"/>
       <g className="sprite-breathe">
@@ -12,9 +17,9 @@ export function HeroSprite({ choice, large = false }: { choice: Hero; large?: bo
         <path d="M24 54H31V69H22V62H24ZM34 54H41V63H43V69H34Z" fill="#28364b"/>
         <path d="M21 67H31V73H18V70H21ZM34 67H43V70H46V73H34Z" fill="#513c3e"/>
         <path d="M18 73H31V75H18ZM34 73H46V75H34Z" fill="#bf9671"/>
-        <path d="M23 31H41V37H44V54H40V58H24V54H20V37H23Z" fill={girl ? '#52b9ad' : '#8c82c5'}/>
-        <path d="M24 36H28V53H24ZM38 37H42V53H38Z" fill={girl ? '#318d90' : '#696296'}/>
-        <path d="M20 38H24V52H17V45H18V40H20ZM41 38H45V42H47V51H41Z" fill={girl ? '#7ad5ba' : '#aea2df'}/>
+        <path d="M23 31H41V37H44V54H40V58H24V54H20V37H23Z" fill={coat[0]}/>
+        <path d="M24 36H28V53H24ZM38 37H42V53H38Z" fill={coat[2]}/>
+        <path d="M20 38H24V52H17V45H18V40H20ZM41 38H45V42H47V51H41Z" fill={coat[1]}/>
         <path d="M17 51H24V57H18V55H17ZM41 51H47V56H45V58H41Z" fill="#efb78a"/>
         <path d="M25 32H39V36H35V42H30V36H25Z" fill="#f5d48c"/>
         <path d="M22 52H42V56H22Z" fill="#62494a"/><path d="M30 51H35V57H30Z" fill="#e4b966"/>

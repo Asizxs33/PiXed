@@ -3,7 +3,7 @@ import { CompanionSprite } from './PixelCharacters'
 import { Play, X } from './PixelIcons'
 import type { PetChoice } from './WelcomeQuest'
 
-export function FirstQuest({ pet, onClose }: { pet: PetChoice; onClose: () => void }) {
+export function FirstQuest({ pet, onClose, onComplete }: { pet: PetChoice; onClose: () => void; onComplete?: () => void }) {
   const [repeat, setRepeat] = useState(1)
   const [position, setPosition] = useState(0)
   const [running, setRunning] = useState(false)
@@ -18,7 +18,7 @@ export function FirstQuest({ pet, onClose }: { pet: PetChoice; onClose: () => vo
     timer.current = window.setInterval(() => {
       next += 1; setPosition(next)
       if (next === repeat) {
-        window.clearInterval(timer.current); setRunning(false)
+        window.clearInterval(timer.current); setRunning(false); if (repeat === 4) onComplete?.()
         setFeedback(repeat === 4 ? 'Bridge crossed! repeat(4) runs move() four times. One small loop, one big discovery.' : repeat < 4 ? `You moved ${repeat} ${repeat === 1 ? 'step' : 'steps'}. The goal is four steps away. Add a few more and try again.` : 'You went one step past the goal. Try one fewer move.')
       }
     }, 450)
