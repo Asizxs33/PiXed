@@ -8,7 +8,16 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/inter':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/pixelify-sans':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/press-start-2p':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/tiny5':
         specifier: ^5.3.0
         version: 5.3.0
       framer-motion:
@@ -51,8 +60,17 @@ importers:
 
 packages:
 
+  '@fontsource/inter@5.3.0':
+    resolution: {integrity: sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==}
+
   '@fontsource/pixelify-sans@5.3.0':
     resolution: {integrity: sha512-4RCe9nXbi7wUu5+H0FNX1sgPZ2kJ1MmY1uTkEfvQIzzqhoS8zGKJaJfdK8oreE0OU+5gM+NdurFi3H3FJRBvyw==}
+
+  '@fontsource/press-start-2p@5.3.0':
+    resolution: {integrity: sha512-gxWFxdeDglPhEYSwEeooomcaFK8kSQYLQwVxfnOJeYRj2sPEHXjpVtFgEaYfqzOjuAJGrIcJOipu2KY5YkbyuQ==}
+
+  '@fontsource/tiny5@5.3.0':
+    resolution: {integrity: sha512-29H01ByMRs6uiLeOoBnZLedf0dR3pF5A53cIBzhp1/Y6Bu5D0t5selTb4TWs3ENoc/OK71rOed5xAdvBywe4aQ==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -722,7 +740,13 @@ packages:
 
 snapshots:
 
+  '@fontsource/inter@5.3.0': {}
+
   '@fontsource/pixelify-sans@5.3.0': {}
+
+  '@fontsource/press-start-2p@5.3.0': {}
+
+  '@fontsource/tiny5@5.3.0': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
