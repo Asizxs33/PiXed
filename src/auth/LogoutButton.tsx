@@ -2,6 +2,26 @@ import { useEffect, useState } from 'react'
 import { useLang } from '../i18n/translate'
 
 /**
+ * Пиксельная иконка выхода: дверной проём слева и стрелка наружу справа.
+ * Нарисована блоками на сетке 20×20 в том же стиле, что и набор PixelIcons.
+ */
+function LogoutIcon() {
+  return (
+    <svg viewBox="0 0 20 20" width="13" height="13" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+      {/* дверной проём (скобка, открытая вправо) */}
+      <rect x="3" y="3" width="2" height="14" />
+      <rect x="3" y="3" width="6" height="2" />
+      <rect x="3" y="15" width="6" height="2" />
+      {/* стрелка наружу */}
+      <rect x="6" y="9" width="8" height="2" />
+      <rect x="12" y="7" width="2" height="2" />
+      <rect x="14" y="9" width="2" height="2" />
+      <rect x="12" y="11" width="2" height="2" />
+    </svg>
+  )
+}
+
+/**
  * Самостоятельная кнопка «Выйти из аккаунта».
  *
  * Приложение хранит игрока локально (профиль + прогресс в localStorage), поэтому
@@ -73,9 +93,13 @@ export function LogoutButton() {
         borderRadius: 8,
         padding: '9px 11px',
         cursor: 'pointer',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 7,
       }}
     >
-      ⎋ {copy.label}
+      <LogoutIcon />
+      {copy.label}
     </button>
   )
 }
