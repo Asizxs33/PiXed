@@ -3,32 +3,33 @@ import { useLang } from '../i18n/translate'
 
 /**
  * Пиксельная иконка выхода: дверной проём слева и стрелка наружу справа.
- * Нарисована блоками на сетке 20×20 в том же стиле, что и набор PixelIcons.
+ * Рисуется чанки-блоками на сетке 16×16 и рендерится 1:1 (16px), поэтому края
+ * остаются резкими и глиф читается как пиксель-арт — в стиле набора PixelIcons.
  */
 function LogoutIcon() {
   return (
-    <svg viewBox="0 0 20 20" width="13" height="13" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
+    <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" shapeRendering="crispEdges" aria-hidden="true">
       {/* дверной проём (скобка, открытая вправо) */}
-      <rect x="3" y="3" width="2" height="14" />
-      <rect x="3" y="3" width="6" height="2" />
-      <rect x="3" y="15" width="6" height="2" />
+      <rect x="2" y="2" width="2" height="12" />
+      <rect x="2" y="2" width="5" height="2" />
+      <rect x="2" y="12" width="5" height="2" />
       {/* стрелка наружу */}
-      <rect x="6" y="9" width="8" height="2" />
+      <rect x="6" y="7" width="6" height="2" />
+      <rect x="10" y="5" width="2" height="2" />
       <rect x="12" y="7" width="2" height="2" />
-      <rect x="14" y="9" width="2" height="2" />
-      <rect x="12" y="11" width="2" height="2" />
+      <rect x="10" y="9" width="2" height="2" />
     </svg>
   )
 }
 
 /**
- * Самостоятельная кнопка «Выйти из аккаунта».
+ * Кнопка «Выйти из аккаунта».
  *
  * Приложение хранит игрока локально (профиль + прогресс в localStorage), поэтому
  * выход = очистить эти ключи и вернуться на стартовый экран (создание игрока).
- * Компонент не трогает компоненты приложения: он лишь чистит хранилище и
- * перезагружает страницу — на старте `loadLearnerProfile()` вернёт null и покажет
- * лендинг. Кнопка видна только когда профиль существует (пользователь «залогинен»).
+ * Показывается ТОЛЬКО когда открыта страница профиля (в DOM есть блок
+ * `.profile-summary`), а не поверх всех экранов. Компоненты приложения не
+ * редактируются — определяем страницу по DOM и чистим хранилище.
  */
 const PROFILE_KEY = 'pixed-player-profile-v3'
 // Ключи, привязанные к локальному игроку. Язык (pixed-lang) намеренно не трогаем.
@@ -36,28 +37,32 @@ const CLEAR_KEYS = ['pixed-player-profile-v3', 'pixed-adventures-v1', 'pixed-pro
 
 export function LogoutButton() {
   const { lang } = useLang()
-  const [hasProfile, setHasProfile] = useState(false)
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const check = () => {
+      let ok = false
       try {
-        setHasProfile(Boolean(localStorage.getItem(PROFILE_KEY)))
+        // Кнопка нужна только на странице профиля залогиненного игрока.
+        ok = Boolean(localStorage.getItem(PROFILE_KEY)) && Boolean(document.querySelector('.profile-summary'))
       } catch {
-        setHasProfile(false)
+        ok = false
       }
+      setVisible(ok)
     }
     check()
-    // Профиль создаётся/меняется внутри приложения (в этой же вкладке), поэтому
-    // событие 'storage' не сработает — подстраховываемся лёгким опросом.
+    // Страница профиля появляется/исчезает при навигации внутри приложения —
+    // следим за DOM и подстраховываемся лёгким опросом.
+    const observer = new MutationObserver(check)
+    observer.observe(document.body, { childList: true, subtree: true })
     const id = window.setInterval(check, 600)
-    window.addEventListener('storage', check)
     return () => {
+      observer.disconnect()
       window.clearInterval(id)
-      window.removeEventListener('storage', check)
     }
   }, [])
 
-  if (!hasProfile) return null
+  if (!visible) return null
 
   const copy =
     lang === 'ru'
