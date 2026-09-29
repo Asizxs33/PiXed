@@ -17,6 +17,11 @@ const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
   setLang: () => {},
 })
 
+/** Доступ к текущему языку интерфейса (для собственных элементов вроде выхода). */
+export function useLang() {
+  return useContext(LangContext)
+}
+
 /**
  * Рантайм-слой перевода интерфейса EN→RU.
  *
